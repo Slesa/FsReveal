@@ -3,11 +3,11 @@ redirects: on
 
 nuget FSharp.Formatting
 nuget FSharp.Core
-github fsprojects/reveal.js:master
+nuget FAKE
+// github fsprojects/reveal.js:master
 
 group Build
   source https://nuget.org/api/v2    
-  nuget FAKE
   nuget SourceLink.Fake
   github fsharp/FAKE modules/Octokit/Octokit.fsx
 

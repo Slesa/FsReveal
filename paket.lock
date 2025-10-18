@@ -1,38 +1,48 @@
 REDIRECTS: ON
 NUGET
   remote: https://www.nuget.org/api/v2
-    FSharp.Compiler.Service (2.0.0.6)
-    FSharp.Core (4.0.0.1)
-    FSharp.Formatting (2.14.4)
-      FSharp.Compiler.Service (2.0.0.6)
-      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
-    FSharpVSPowerTools.Core (2.3)
-      FSharp.Compiler.Service (>= 2.0.0.3)
-GITHUB
-  remote: fsprojects/reveal.js
-    FULLPROJECT (539e774d31f91676bcc3f75e28168921cd27d819)
+    FAKE (5.16)
+    FSharp.Compiler.Service (43.8.100) - restriction: >= netstandard2.1
+      FSharp.Core (8.0.100) - restriction: >= netstandard2.0
+      System.Buffers (>= 4.5.1) - restriction: >= netstandard2.0
+      System.Collections.Immutable (>= 7.0) - restriction: >= netstandard2.0
+      System.Diagnostics.DiagnosticSource (>= 7.0.2) - restriction: >= netstandard2.0
+      System.Memory (>= 4.5.5) - restriction: >= netstandard2.0
+      System.Reflection.Emit (>= 4.7) - restriction: >= netstandard2.0
+      System.Reflection.Metadata (>= 7.0) - restriction: >= netstandard2.0
+      System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: >= netstandard2.0
+    FSharp.Core (8.0.100)
+    FSharp.Formatting (20.0.1)
+      FSharp.Compiler.Service (43.8.100) - restriction: >= netstandard2.1
+      FSharp.Core (8.0.100) - restriction: >= netstandard2.1
+    System.Buffers (4.6.1) - restriction: >= netstandard2.1
+    System.Collections.Immutable (9.0.10) - restriction: || (&& (>= net8.0) (< net9.0)) (>= netstandard2.1)
+      System.Memory (>= 4.5.5) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+      System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+    System.Diagnostics.DiagnosticSource (9.0.10) - restriction: >= netstandard2.1
+      System.Memory (>= 4.5.5) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+      System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+    System.Memory (4.6.3) - restriction: >= netstandard2.1
+    System.Reflection.Emit (4.7) - restriction: >= netstandard2.1
+    System.Reflection.Metadata (9.0.10) - restriction: >= netstandard2.1
+      System.Collections.Immutable (>= 9.0.10) - restriction: || (>= net462) (&& (>= net8.0) (< net9.0)) (&& (< net8.0) (>= netstandard2.0))
+      System.Memory (>= 4.5.5) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+    System.Runtime.CompilerServices.Unsafe (6.1.2) - restriction: >= netstandard2.1
+
 GROUP Build
 NUGET
   remote: https://www.nuget.org/api/v2
-    FAKE (4.28)
-    Microsoft.Bcl (1.1.10) - framework: net10, net11, net20, net30, net35, net40, net40-full
-      Microsoft.Bcl.Build (>= 1.0.14)
-    Microsoft.Bcl.Build (1.0.21) - import_targets: false, framework: net10, net11, net20, net30, net35, net40, net40-full
-    Microsoft.Net.Http (2.2.29) - framework: net10, net11, net20, net30, net35, net40, net40-full
-      Microsoft.Bcl (>= 1.1.10)
-      Microsoft.Bcl.Build (>= 1.0.14)
-    Octokit (0.20)
-      Microsoft.Net.Http  - framework: net10, net11, net20, net30, net35, net40, net40-full
+    Octokit (14.0)
     SourceLink.Fake (1.1)
 GITHUB
   remote: fsharp/FAKE
-    modules/Octokit/Octokit.fsx (5a9789b05e5713b55ea996baf8feb3561b6b926d)
-      Octokit
+    modules/Octokit/Octokit.fsx (b21937346ddcba9fe8756de66a500b3ae9a79e12)
+      Octokit (>= 0.20)
 GROUP Test
 NUGET
   remote: https://www.nuget.org/api/v2
-    NUnit (2.6.4)
-    NUnit.Runners (2.6.4)
+    NUnit (2.7.1)
+    NUnit.Runners (2.7.1)
 GITHUB
   remote: forki/FsUnit
-    FsUnit.fs (f536bd5ed0eba8b38d2b01ae79d64e4e14fbd0a6)
+    FsUnit.fs (fa4eb37288d355eb855261be6c0b3945fba68432)

@@ -2,7 +2,7 @@
 // FAKE build script
 // --------------------------------------------------------------------------------------
 
-#r @"packages/build/FAKE/tools/FakeLib.dll"
+#r "paket: groupref Build //"
 
 open Fake
 open Fake.Git
@@ -10,11 +10,8 @@ open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
 open System
 open System.IO
-#if MONO
-#else
 #load "packages/build/SourceLink.Fake/Tools/Fake.fsx"
 open SourceLink
-#endif
 
 // --------------------------------------------------------------------------------------
 // START TODO: Provide project-specific details below
