@@ -1,7 +1,6 @@
 REDIRECTS: ON
 NUGET
   remote: https://www.nuget.org/api/v2
-    FAKE (5.16)
     FSharp.Compiler.Service (43.8.100) - restriction: >= netstandard2.1
       FSharp.Core (8.0.100) - restriction: >= netstandard2.0
       System.Buffers (>= 4.5.1) - restriction: >= netstandard2.0
@@ -33,16 +32,9 @@ GROUP Build
 NUGET
   remote: https://www.nuget.org/api/v2
     Octokit (14.0)
-    SourceLink.Fake (1.1)
 GITHUB
   remote: fsharp/FAKE
     modules/Octokit/Octokit.fsx (b21937346ddcba9fe8756de66a500b3ae9a79e12)
       Octokit (>= 0.20)
 GROUP Test
-NUGET
-  remote: https://www.nuget.org/api/v2
-    NUnit (2.7.1)
-    NUnit.Runners (2.7.1)
-GITHUB
-  remote: forki/FsUnit
-    FsUnit.fs (fa4eb37288d355eb855261be6c0b3945fba68432)
+
