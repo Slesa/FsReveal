@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
@@ -11,6 +11,14 @@
         <Compile Include="Markdown.fs"/>
         <Compile Include="Formatting.fs"/>
         <Compile Include="FsReveal.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FSharp.Core" Version="7.0.400" />
+      <PackageReference Include="FSharp.Compiler.Service" Version="43.7.400" />
+      <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
+      <PackageReference Include="FSharp.Formatting.Literate" Version="19.1.1" />
+      <PackageReference Include="FSharp.Formatting.Markdown" Version="1.0.0" />
     </ItemGroup>
 
 </Project>
