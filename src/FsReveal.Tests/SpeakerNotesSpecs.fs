@@ -47,5 +47,5 @@ let ``can generate sections from markdown``() =
     let result =
         Formatting.GenerateHTML testTemplate presentation
         |> normalizeLineBreaks
-    let expected = normalizeLineBreaks expectedOutput 
-    Assert.Equal (expected, result)
+    let result = normalizeLineBreaks expectedOutput 
+    Assert.Equal (expectedOutput, result)

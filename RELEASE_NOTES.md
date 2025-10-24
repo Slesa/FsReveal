@@ -1,3 +1,7 @@
+### 2.0.0 - 23.10.2025
+* Use .NET 8
+
+
 ### 1.3.1 - 17.06.2016
 * BUGFIX: Position tooltips properly on all screens
 

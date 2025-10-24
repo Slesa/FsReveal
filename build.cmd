@@ -1,9 +1,9 @@
 @echo off
 cls
 
-dotnet paket restore
-if errorlevel 1 (
-  exit /b %errorlevel%
-)
+rem dotnet paket restore
+rem if errorlevel 1 (
+rem   exit /b %errorlevel%
+rem )
 
 dotnet fake run build.fsx %*

@@ -3,6 +3,8 @@
 // --------------------------------------------------------------------------------------
 
 // #r "paket: groupref Build //"
+#r "paket: nuget Fake.DotNet.Cli //"
+open Fake.DotNet
 
 //open Fake
 //open Fake.Git
@@ -114,7 +116,7 @@ Target "CleanDocs" (fun _ ->
 
 Target "Build" (fun _ ->
     !! solutionFile
-    |> MSBuildRelease "" "Rebuild"
+    |> DoNet.exec dotnetSimple "build"
     |> ignore
 )
 
@@ -259,21 +261,22 @@ Target "BuildPackage" DoNothing
 // Run all targets by default. Invoke 'build <Target>' to override
 
 Target "All" DoNothing
+
+"Clean" 
+  ==> "AssemblyInfo"
+
 (*
 "Clean"
   ==> "AssemblyInfo"
   ==> "Build"
   ==> "RunTests"
-  =?> ("GenerateReferenceDocs",isLocalBuild && not isMono)
-  =?> ("GenerateDocs",isLocalBuild && not isMono)
+  =?> ("GenerateReferenceDocs",isLocalBuild)
+  =?> ("GenerateDocs",isLocalBuild)
   ==> "All"
-  =?> ("ReleaseDocs",isLocalBuild && not isMono)
+  =?> ("ReleaseDocs",isLocalBuild)
 
 "All" 
-//#if MONO
-//#else
 //  =?> ("SourceLink", Pdbstr.tryFind().IsSome )
-//#endif
   ==> "NuGet"
   ==> "BuildPackage"
 

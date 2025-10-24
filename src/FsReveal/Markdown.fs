@@ -24,8 +24,12 @@ let getPresentation (doc : LiterateDocument) =
         spans |> List.map extractProperty
     
     // main section is separated by ***
-    let sections = splitBy (MarkdownParagraph.HorizontalRule('*', None)) doc.Paragraphs
+    // let sections = splitBy (MarkdownParagraph.HorizontalRule('*', None)) doc.Paragraphs
+    let sections = splitParagraphs '*' doc.Paragraphs
+    //let sections = splitBy doc.Paragraphs
     
+    let head = sections.Head
+    let hhead = [head] 
     let properties,slideData =
         let map,slideData =
             match sections.Head with
@@ -75,7 +79,7 @@ let getPresentation (doc : LiterateDocument) =
         // sub-section is separated by ---
         let nestedSlides =
             paragraphs
-            |> splitBy (HorizontalRule('-', None))
+            |> splitParagraphs '-'
             |> List.map extractSlideData
 
         match nestedSlides with
