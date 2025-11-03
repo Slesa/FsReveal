@@ -7,6 +7,11 @@ open Fake.IO.Globbing.Operators
 
 open FsReveal
 open Suave
+open Suave.Operators
+open Suave.Sockets.Control
+open Suave.WebSocket
+open Suave.Utils
+open Suave.Files
 
 let outDir = __SOURCE_DIRECTORY__ </> "output"
 let slidesDir = __SOURCE_DIRECTORY__ </> "slides"
@@ -79,20 +84,21 @@ let startWebServer () =
 
     let port = findPort 8083
 
+    let di = new DirectoryInfo(outDir)
     let serverConfig = 
         { defaultConfig with
-           homeFolder = Some (FullName outDir)
+           homeFolder = Some di.FullName
            bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" port ]
         }
     let app =
       choose [
-        Filters.path "/websocket" >=> handShake socketHandler
+        Filters.path "/websocket" >=> WebSocket.handShake( socketHandler )
         Writers.setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
         >=> Writers.setHeader "Pragma" "no-cache"
         >=> Writers.setHeader "Expires" "0"
         >=> browseHome ]
     startWebServerAsync serverConfig app |> snd |> Async.Start
-    Process.Start (sprintf "http://localhost:%d/index.html" port) |> ignore
+    Shell.Exec (sprintf "http://localhost:%d/index.html" port) |> ignore
 
 let fileInfo fn = new FileInfo(fn)
 
