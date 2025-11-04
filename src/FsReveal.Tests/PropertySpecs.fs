@@ -1,8 +1,7 @@
 module FsReveal.PropertySpecs
 
 open FsReveal
-open NUnit.Framework
-open FsUnit
+open Xunit
 
 let md = """
 - title : FsReveal
@@ -31,19 +30,19 @@ let md = """
 
 ### Section 3"""
 
-[<Test>]
+[<Fact>]
 let ``can read properties from markdown``() = 
     let properties = (md |> FsReveal.GetPresentationFromMarkdown).Properties
-    properties.["title"] |> shouldEqual "FsReveal"
-    properties.["description"] |> shouldEqual "Introduction to FsReveal"
-    properties.["theme"] |> shouldEqual "Night"
-    properties.["transition"] |> shouldEqual "default"
+    Assert.Equal ("FsReveal", properties.["title"])
+    Assert.Equal ("Introduction to FsReveal", properties.["description"]) 
+    Assert.Equal ("Night", properties.["theme"]) 
+    Assert.Equal ("default", properties.["transition"]) 
 
 let defaultMD = """
 ***
 
 ### Section 1
-
+r
 ***
 
 ### Section 2
@@ -60,10 +59,10 @@ let defaultMD = """
 
 ### Section 3"""
 
-[<Test>]
+[<Fact>]
 let ``uses default properties if nothing is specified in markdown``() = 
     let properties = (defaultMD |> FsReveal.GetPresentationFromMarkdown).Properties
-    properties.["title"] |> shouldEqual "Presentation"
-    properties.["description"] |> shouldEqual ""
-    properties.["theme"] |> shouldEqual "night"
-    properties.["transition"] |> shouldEqual "default"
+    Assert.Equal ("Presentation", properties.["title"]) 
+    Assert.Empty properties.["description"]
+    Assert.Equal ("night", properties.["theme"]) 
+    Assert.Equal ("default", properties.["transition"]) 

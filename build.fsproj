@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="build.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="8.0.100" />
+      <PackageReference Include="FSharp.Compiler.Service" Version="43.8.100" />
+      <PackageReference Include="Fake.Core.Target" Version="6.1.4" />
+      <PackageReference Include="Fake.IO.FileSystem" Version="6.1.4" />
+      <PackageReference Include="FSharp.Literate" Version="4.1.0" />
+      <PackageReference Include="Suave" Version="2.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="src\FsReveal\FsReveal.fsproj" />
+    </ItemGroup>
+
+</Project>

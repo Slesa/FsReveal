@@ -1,8 +1,8 @@
 module FsReveal.SlidePropertySpecs
 
 open FsReveal
-open NUnit.Framework
-open FsUnit
+open Microsoft.FSharp.Quotations
+open Xunit
 
 let md = """
 - title : FsReveal
@@ -31,14 +31,14 @@ let md = """
 
 ### Section 3"""
 
-[<Test>]
+[<Fact>]
 let ``can read properties from slides``() = 
     let doc = md |> FsReveal.GetPresentationFromMarkdown
     match doc.Slides.[0] with
     | Simple slide ->
         let slideProperties = slide.Properties
-        slideProperties.["background"] |> shouldEqual "image.png"
-        slideProperties.["background-repeat"] |> shouldEqual "repeat"
+        Assert.Equal ("image.png", slideProperties.["background"])
+        Assert.Equal ("repeat", slideProperties.["background-repeat"]) 
     | _ -> failwith "first slide should be a simple one"
 
 let md2 = """***
@@ -64,17 +64,17 @@ let md2 = """***
 
 ### Section 3"""
 
-[<Test>]
+[<Fact>]
 let ``can read properties from slides with list``() = 
     let doc = md2 |> FsReveal.GetPresentationFromMarkdown
     match doc.Slides.[1] with
     | Nested slides ->
         let firstNestedSlideProperties = slides.[0].Properties
-        firstNestedSlideProperties.["data-background"] |> shouldEqual "images/smalllogo.png"
-        firstNestedSlideProperties.["data-background-repeat"] |> shouldEqual "repeat"
-        firstNestedSlideProperties.["data-background-size"] |> shouldEqual "100px"
+        Assert.Equal ("images/smalllogo.png", firstNestedSlideProperties.["data-background"]) 
+        Assert.Equal ("repeat", firstNestedSlideProperties.["data-background-repeat"]) 
+        Assert.Equal ("100px", firstNestedSlideProperties.["data-background-size"]) 
         let secondNestedSlideProperties = slides.[1].Properties
-        secondNestedSlideProperties |> shouldEqual Map.empty
+        Assert.Empty secondNestedSlideProperties 
     | _ -> failwith "first slide should be a nested one"
 
 let testTemplate ="{slides}"
@@ -105,9 +105,11 @@ let expectedOutput = """<section >
 
 """
 
-[<Test>]
+[<Fact>]
 let ``should not render slide properties``() = 
     let presentation = FsReveal.GetPresentationFromMarkdown md2
-    Formatting.GenerateHTML testTemplate presentation
-    |> normalizeLineBreaks
-    |> shouldEqual (normalizeLineBreaks expectedOutput)
+    let result =
+        Formatting.GenerateHTML testTemplate presentation
+        |> normalizeLineBreaks
+    let result = normalizeLineBreaks expectedOutput
+    Assert.Equal (expectedOutput, result)

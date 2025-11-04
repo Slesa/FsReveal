@@ -1,8 +1,7 @@
 module FsReveal.SectionsSpecs
 
 open FsReveal
-open NUnit.Framework
-open FsUnit
+open Xunit
 
 let md = """
 - title : FsReveal
@@ -31,10 +30,10 @@ let md = """
 
 ### Slide 3"""
 
-[<Test>]
+[<Fact>]
 let ``can generate sections from markdown``() = 
     let slides = (md |> FsReveal.GetPresentationFromMarkdown).Slides
-    slides.Length |> shouldEqual 3
+    Assert.Equal (3, slides.Length)
     let slide = 
         slides
         |> Seq.skip 1
@@ -65,10 +64,10 @@ let md2 = """
 
 ### Slide 3"""
 
-[<Test>]
+[<Fact>]
 let ``can generate sections from markdown without properties``() = 
     let slides = (md2 |> FsReveal.GetPresentationFromMarkdown).Slides
-    slides.Length |> shouldEqual 3
+    Assert.Equal (3, slides.Length)
     let slide = slides.[1]
     match slide with
     | Slide.Nested x -> ()
@@ -100,9 +99,11 @@ let expectedOutput = """<section >
 
 """
 
-[<Test>]
+[<Fact>]
 let ``can generate html sections from markdown``() = 
     let presentation = FsReveal.GetPresentationFromMarkdown md
-    Formatting.GenerateHTML testTemplate presentation
-    |> normalizeLineBreaks
-    |> shouldEqual (normalizeLineBreaks expectedOutput)
+    let result =
+        Formatting.GenerateHTML testTemplate presentation
+        |> normalizeLineBreaks
+    let result = normalizeLineBreaks expectedOutput 
+    Assert.Equal (expectedOutput, result)

@@ -2,12 +2,9 @@
 module internal FsReveal.Markdown
 
 open System
-open System.IO
-open System.Collections.Generic
-open System.Text
-open FSharp.Literate
-open FSharp.Markdown
-open FSharp.Markdown.Html
+open FSharp.Formatting.Literate
+open FSharp.Formatting.Markdown
+
 
 let getPresentation (doc : LiterateDocument) = 
     /// get properties, a list of (key,value) from
@@ -15,9 +12,9 @@ let getPresentation (doc : LiterateDocument) =
     let getProperties (spans : list<list<_>>) = 
         let extractProperty paragraphs = 
             match paragraphs with
-            | [ Span(l) ] -> 
+            | [ Span(l, _) ] -> 
                 match l with
-                | [ Literal(v) ] when v.Contains(":") -> 
+                | [ MarkdownSpan.Literal(v, _) ] when v.Contains(":") -> 
                     let colonPos = v.IndexOf(':')
                     let key = v.Substring(0, colonPos).Trim()
                     let value = v.Substring(colonPos + 1).Trim()
@@ -27,12 +24,16 @@ let getPresentation (doc : LiterateDocument) =
         spans |> List.map extractProperty
     
     // main section is separated by ***
-    let sections = splitBy (HorizontalRule('*')) doc.Paragraphs
+    // let sections = splitBy (MarkdownParagraph.HorizontalRule('*', None)) doc.Paragraphs
+    let sections = splitParagraphs '*' doc.Paragraphs
+    //let sections = splitBy doc.Paragraphs
     
+    let head = sections.Head
+    let hhead = [head] 
     let properties,slideData =
         let map,slideData =
             match sections.Head with
-            | [ ListBlock(_, spans) ] -> getProperties spans |> Map.ofList,sections.Tail
+            | [ ListBlock(_, spans, _) ] -> getProperties spans |> Map.ofList,sections.Tail
             | x -> Map.empty,sections
 
         let add key v map =
@@ -51,7 +52,7 @@ let getPresentation (doc : LiterateDocument) =
     
     let wrappedInSection (properties:Map<_,_>) paragraphs = 
         let attributes = properties |> Seq.map (fun kv -> sprintf "%s=\"%s\"" kv.Key kv.Value)
-        InlineBlock(sprintf "<section %s>" (String.Join(" ", attributes))) :: paragraphs @ [ InlineBlock("</section>") ]
+        InlineHtmlBlock(sprintf "<section %s>" (String.Join(" ", attributes)), None, None) :: paragraphs @ [ InlineHtmlBlock("</section>", None, None) ]
     
     let getParagraphsFromSlide slide = 
         match slide with
@@ -66,7 +67,7 @@ let getPresentation (doc : LiterateDocument) =
         let extractSlideData paragraphs = 
             let properties, data =
                 match paragraphs with
-                | ListBlock(_, spans) :: data -> 
+                | ListBlock(_, spans, _) :: data -> 
                     try 
                         getProperties spans, data
                     with _ -> [], paragraphs
@@ -78,7 +79,7 @@ let getPresentation (doc : LiterateDocument) =
         // sub-section is separated by ---
         let nestedSlides =
             paragraphs
-            |> splitBy (HorizontalRule('-'))
+            |> splitParagraphs '-'
             |> List.map extractSlideData
 
         match nestedSlides with
