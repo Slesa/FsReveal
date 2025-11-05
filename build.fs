@@ -17,12 +17,15 @@ open Suave.Files
 let outDir = __SOURCE_DIRECTORY__ </> "output"
 let slidesDir = __SOURCE_DIRECTORY__ </> "slides"
 
+// https://github.com/TheAngryByrd/MiniScaffold
+
 (*let fsiEvaluator = 
     let evaluator = FSharp.Literate.FsiEvaluator()
     evaluator.EvaluationFailed.Add(fun err -> 
         Trace.traceImportant <| sprintf "Evaluating F# snippet failed:\n%s\nThe snippet evaluated:\n%s" err.StdErr err.Text )
     evaluator 
 *)
+
 let copyStylesheet() =
     try
         Shell.copyFile (outDir </> "css" </> "custom.css") (slidesDir </> "custom.css")
@@ -38,6 +41,7 @@ let copyPics() =
 
 let generateFor (file:FileInfo) = 
     try
+        Trace.traceImportant <| sprintf "Generating slides for: %s" file.FullName
         copyPics()
         let rec tryGenerate trials =
             try
@@ -64,6 +68,7 @@ let handleWatcherEvents (events:FileChange seq) =
         match fi.Attributes.HasFlag FileAttributes.Hidden || fi.Attributes.HasFlag FileAttributes.Directory with
         | true -> ()
         | _ -> generateFor fi
+//        | _ -> printfn $"%s{fi.FullName}"
     refreshEvent.Trigger()
 
 let socketHandler (webSocket : WebSocket.WebSocket) =
@@ -99,42 +104,57 @@ let startWebServer () =
         >=> Writers.setHeader "Expires" "0"
         >=> browseHome ]
     startWebServerAsync serverConfig app |> snd |> Async.Start
-    Shell.Exec (sprintf "http://localhost:%d/index.html" port) |> ignore
+    System.Diagnostics.Process.Start (sprintf "http://localhost:%d/index.html" port) |> ignore
+    //Shell.Exec (sprintf "http://localhost:%d/index.html" port) |> ignore
 
-let fileInfo fn = new FileInfo(fn)
 
-Target.create "GenerateSlides" (fun _ ->
-    !! (slidesDir + "/**/*.md")
-      ++ (slidesDir + "/**/*.fsx")
-    |> Seq.map fileInfo
-    |> Seq.iter generateFor
-)
-
-Target.create "KeepRunning" (fun _ ->
-    use watcher = !! (slidesDir + "/**/*.*") |> ChangeWatcher.run handleWatcherEvents
+let initTargets () =
+    let fileInfo fn = new FileInfo(fn)
+    Target.create "GenerateSlides" (fun _ ->
+        !! (slidesDir + "/**/*.md")
+          ++ (slidesDir + "/**/*.fsx")
+        |> Seq.map fileInfo
+        |> Seq.iter generateFor
+    )
     
-    startWebServer ()
+    Target.create "KeepRunning" (fun _ ->
+        use watcher = !! (slidesDir + "/**/*.*") |> ChangeWatcher.run handleWatcherEvents
+        
+        startWebServer ()
 
-    Trace.traceImportant "Waiting for slide edits. Press any key to stop."
+        Trace.traceImportant "Waiting for slide edits. Press any key to stop."
 
-    System.Console.ReadKey() |> ignore
+        System.Console.ReadKey() |> ignore
 
-    watcher.Dispose()
-)
+        watcher.Dispose()
+    )
 
 
-Target.create "Default" (fun _ ->
-    printfn "Done"
-)
+    Target.create "Default" (fun _ ->
+        printfn "Done"
+    )
 
-Target.create "Clean" (fun _ ->
-    Shell.cleanDirs [outDir]
-)
+    Target.create "Clean" (fun _ ->
+        Shell.cleanDirs [outDir]
+    )
 
-"Clean"
-  ==> "GenerateSlides"
-  ==> "KeepRunning"
-  ==> "Default"
-|> ignore
+    "Clean"
+      ==> "GenerateSlides"
+      ==> "KeepRunning"
+      ==> "Default"
+    |> ignore
 
-Target.runOrDefault "Clean"
+
+
+[<EntryPoint>]
+let main argv =
+    argv
+    |> Array.toList
+    |> Context.FakeExecutionContext.Create false "build.fsx"
+    |> Context.RuntimeContext.Fake
+    |> Context.setExecutionContext
+
+    initTargets ()
+    Target.runOrDefaultWithArguments ("KeepRunning")
+
+    0 // return an integer exit code
