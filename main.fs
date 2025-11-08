@@ -1,8 +1,8 @@
-﻿open System.IO
+﻿open System.Diagnostics
+open System.IO
 open FSharp.Formatting.Literate.Evaluation
 open Fake.Core
 open Fake.IO
-open Fake.Core.TargetOperators
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 
@@ -14,6 +14,7 @@ open Suave.WebSocket
 open Suave.Utils
 open Suave.Files
 
+let operator (</>) a b =  Path.Combine (a, b)
 let outDir = __SOURCE_DIRECTORY__ </> "output"
 let slidesDir = __SOURCE_DIRECTORY__ </> "slides"
 
@@ -25,7 +26,6 @@ let slidesDir = __SOURCE_DIRECTORY__ </> "slides"
         Trace.traceImportant <| sprintf "Evaluating F# snippet failed:\n%s\nThe snippet evaluated:\n%s" err.StdErr err.Text )
     evaluator 
 *)
-
 let copyStylesheet() =
     try
         Shell.copyFile (outDir </> "css" </> "custom.css") (slidesDir </> "custom.css")
@@ -45,7 +45,7 @@ let generateFor (file:FileInfo) =
         copyPics()
         let rec tryGenerate trials =
             try
-                FsReveal.GenerateFromFile(file.FullName, outDir) //, fsiEvaluator = (fsiEvaluator :> IFsiEvaluator)) #Todo
+                FsReveal.GenerateFromFile(file.FullName, outDir) //, fsiEvaluator = (fsiEvaluator :> IFsiEvaluator)) //#Todo
             with 
             | exn when trials > 0 -> tryGenerate (trials - 1)
             | exn -> 
@@ -104,32 +104,45 @@ let startWebServer () =
         >=> Writers.setHeader "Expires" "0"
         >=> browseHome ]
     startWebServerAsync serverConfig app |> snd |> Async.Start
-    System.Diagnostics.Process.Start (sprintf "http://localhost:%d/index.html" port) |> ignore
+    
+    Directory.SetCurrentDirectory(outDir)
+    
+    
+    //let startInfo = new ProcessStartInfo( sprintf "http://localhost:%d/index.html" port )
+    let startInfo = new ProcessStartInfo( "firefox")
+    startInfo.Arguments <- sprintf "http://localhost:%d/index.html" port
+    startInfo.UseShellExecute <- false
+    startInfo.WorkingDirectory <- outDir
+    use proc = Process.Start(startInfo)
+    proc.WaitForExit()
+    //System.Diagnostics.Process.Start (sprintf "http://localhost:%d/index.html" port) |> ignore
     //Shell.Exec (sprintf "http://localhost:%d/index.html" port) |> ignore
 
 
-let initTargets () =
+//let initTargets () =
+//    Target.create "GenerateSlides" (fun _ ->
+let generateSlides =         
     let fileInfo fn = new FileInfo(fn)
-    Target.create "GenerateSlides" (fun _ ->
-        !! (slidesDir + "/**/*.md")
-          ++ (slidesDir + "/**/*.fsx")
-        |> Seq.map fileInfo
-        |> Seq.iter generateFor
-    )
+    !! (slidesDir + "/**/*.md")
+      ++ (slidesDir + "/**/*.fsx")
+    |> Seq.map fileInfo
+    |> Seq.iter generateFor
+//    )
     
-    Target.create "KeepRunning" (fun _ ->
-        use watcher = !! (slidesDir + "/**/*.*") |> ChangeWatcher.run handleWatcherEvents
+//    Target.create "KeepRunning" (fun _ ->
+let keepRunning =
+    use watcher = !! (slidesDir + "/**/*.*") |> ChangeWatcher.run handleWatcherEvents
         
-        startWebServer ()
+    startWebServer() 
 
-        Trace.traceImportant "Waiting for slide edits. Press any key to stop."
+    Trace.traceImportant "Waiting for slide edits. Press any key to stop."
 
-        System.Console.ReadKey() |> ignore
+    System.Console.ReadKey() |> ignore
 
-        watcher.Dispose()
-    )
+    watcher.Dispose()
+//    )
 
-
+(*
     Target.create "Default" (fun _ ->
         printfn "Done"
     )
@@ -143,18 +156,27 @@ let initTargets () =
       ==> "KeepRunning"
       ==> "Default"
     |> ignore
-
+*)
 
 
 [<EntryPoint>]
 let main argv =
-    argv
+
+    Trace.traceImportant  "Starting up..."
+    Trace.traceImportant  <| sprintf "outdir is set to %s" outDir
+    Trace.traceImportant  <| sprintf "slides is set to %s" slidesDir
+    
+    generateSlides
+    keepRunning
+    (* argv
     |> Array.toList
     |> Context.FakeExecutionContext.Create false "build.fsx"
     |> Context.RuntimeContext.Fake
     |> Context.setExecutionContext
 
     initTargets ()
-    Target.runOrDefaultWithArguments ("KeepRunning")
-
+    Target.runOrDefaultWithArguments ("KeepRunning")*)
+    
+    Trace.traceImportant  "Done"
     0 // return an integer exit code
+    

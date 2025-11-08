@@ -1,7 +1,7 @@
 ﻿namespace FsReveal
 
 open System.IO
-open FSharp.Formatting.Literate
+open FSharp.Literate
 
 module FsRevealHelper = 
     // used to change the working directory

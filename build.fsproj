@@ -5,21 +5,28 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <OutputPath>./output/</OutputPath>
+    </PropertyGroup>
+
     <ItemGroup>
-        <Compile Include="build.fs"/>
+        <Compile Include="main.fs" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Update="FSharp.Core" Version="8.0.100" />
       <PackageReference Include="FSharp.Compiler.Service" Version="43.8.100" />
-      <PackageReference Include="Fake.Core.Target" Version="6.1.4" />
-      <PackageReference Include="Fake.IO.FileSystem" Version="6.1.4" />
-      <PackageReference Include="FSharp.Literate" Version="4.1.0" />
+<!--      <PackageReference Include="Fake.Core.Target" Version="6.1.4" />-->
+<!--      <PackageReference Include="Fake.IO.FileSystem" Version="6.1.4" />-->
+<!--      <PackageReference Include="FSharp.Literate" Version="4.1.0" />-->
       <PackageReference Include="Suave" Version="2.6.2" />
+<!--      <PackageReference Include="FSharp.Formatting" Version="20.0.1" />-->
+<!--      <PackageReference Include="FSharp.Formatting.Literate" Version="20.0.1" />-->
+<!--      <PackageReference Include="FSharp.Formatting.Markdown" Version="1.0.0" />-->
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="src\FsReveal\FsReveal.fsproj" />
+      <ProjectReference Include="src\FsReveal\FsReveal.fsproj" /> 
     </ItemGroup>
 
 </Project>

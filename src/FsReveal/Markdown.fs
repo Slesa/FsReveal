@@ -2,7 +2,7 @@
 module internal FsReveal.Markdown
 
 open System
-open FSharp.Formatting.Literate
+open FSharp.Literate
 open FSharp.Formatting.Markdown
 
 
