@@ -4,9 +4,9 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open FSharp.Literate
-open FSharp.Markdown
-open FSharp.Markdown.Html
+open FSharp.Formatting.Literate
+open FSharp.Formatting.Markdown
+//open FSharp.Markdown.Html
 
 module FsRevealHelper = 
     // used to change the working directory
@@ -20,7 +20,7 @@ type FsReveal private() =
         | Some fn -> fn
         | None -> other.Name.Replace(other.Extension, ".html")
 
-    static let generateOutput outDir outFile presentation = 
+    static let generateOutput outDir outFile (presentation: Presentation)= 
         if Directory.Exists outDir |> not then 
             Directory.CreateDirectory outDir |> ignore
             printfn "Creating %s.." outDir
@@ -32,7 +32,7 @@ type FsReveal private() =
         if di.Exists then di.Delete(true)
         let template = File.ReadAllText(FsRevealHelper.TemplateFile)
         printfn "Apply template : %s" FsRevealHelper.TemplateFile
-        let output = Formatting.GenerateHTML template presentation
+        let output = Formatting.GenerateHTML template presentation.Document
         File.WriteAllText(outDir @@ outFile, output)
         let cssDir = outDir @@ "css" 
         printfn "Copy fsreveal.css style from %s to %s" FsRevealHelper.StyleFile cssDir

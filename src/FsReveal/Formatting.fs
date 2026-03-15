@@ -1,7 +1,8 @@
 ﻿module FsReveal.Formatting
 
 open FsReveal
-open FSharp.Literate
+//open FSharp.Literate
+open FSharp.Formatting
 open System.Text
 open System.IO
 open System
@@ -28,11 +29,16 @@ let preprocessing (text : string []) =
     
 /// Generates a HTML page from a presentation
 let GenerateHTML (template:string) presentation =
-    let doc = Literate.FormatLiterateNodes presentation.Document
-    let htmlSlides = Literate.WriteHtml doc
-    let toolTips = doc.FormattedTips
-    let output = StringBuilder(template)
+    
+    let html = FSharp.Formatting.Literate.Literate.ToHtml(presentation)
+        
+//    let doc = Literate.FormatLiterateNodes presentation.Document
+//    let htmlSlides = Literate.WriteHtml doc
+//    let toolTips = doc.FormattedTips
+//    let output = StringBuilder(template)
     // replace properties
-    presentation.Properties |> Map.iter (fun k v -> output.Replace(sprintf "{%s}" k, v) |> ignore)
-    output.Replace("{slides}", htmlSlides).Replace("{tooltips}", toolTips) |> ignore
-    output.ToString()
+//    presentation.Properties |> Map.iter (fun k v -> output.Replace(sprintf "{%s}" k, v) |> ignore)
+//    output.Replace("{slides}", htmlSlides).Replace("{tooltips}", toolTips) |> ignore
+//    output.ToString()
+    
+    html

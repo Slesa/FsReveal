@@ -45,6 +45,7 @@ And some more<br/>
 [<Test>]
 let ``can generate sections from markdown``() = 
     let presentation = FsReveal.GetPresentationFromMarkdown md
-    Formatting.GenerateHTML testTemplate presentation
+    Formatting.GenerateHTML testTemplate presentation.Document
+    
     |> normalizeLineBreaks
     |> shouldEqual (normalizeLineBreaks expectedOutput)

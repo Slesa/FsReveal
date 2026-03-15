@@ -13,4 +13,8 @@
         <Compile Include="FsReveal.fs"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FSharp.Formatting" Version="21.0.0" />
+    </ItemGroup>
+
 </Project>

@@ -4,9 +4,9 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open FSharp.Literate
-open FSharp.Markdown
-open FSharp.Markdown.Html
+open FSharp.Formatting.Literate
+open FSharp.Formatting.Markdown
+//open FSharp.Formatting.Html
 
 type SlideData = 
     { Properties : Map<string,string>

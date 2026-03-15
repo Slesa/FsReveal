@@ -108,6 +108,6 @@ let expectedOutput = """<section >
 [<Test>]
 let ``should not render slide properties``() = 
     let presentation = FsReveal.GetPresentationFromMarkdown md2
-    Formatting.GenerateHTML testTemplate presentation
+    Formatting.GenerateHTML testTemplate presentation.Document
     |> normalizeLineBreaks
     |> shouldEqual (normalizeLineBreaks expectedOutput)
