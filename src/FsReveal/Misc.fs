@@ -1,13 +1,11 @@
 ﻿[<AutoOpen>]
 module internal FsReveal.Misc
 
-open System
 open System.IO
 open System.Collections.Generic
 open System.Text
 open FSharp.Formatting.Literate
 open FSharp.Formatting.Markdown
-//open FSharp.Markdown.Html
 
 /// Correctly combine two paths
 let (@@) a b = Path.Combine(a, b)
@@ -28,6 +26,24 @@ let rec copyFiles filter source target =
         for f in Directory.GetFiles(source) do
             if not <| filter f then File.Copy(f, (target @@ Path.GetFileName(f)), true)
 
+let splitParagraphs ch list =
+    let yieldRevNonEmpty list = 
+        if list = [] then []
+        else [ List.rev list ]
+    let rec loop groupSoFar list = 
+        seq { 
+            match list with
+            | [] -> yield! yieldRevNonEmpty groupSoFar
+            | head :: tail ->
+                match head with
+                | MarkdownParagraph.HorizontalRule(v, _) when v = ch ->
+                    yield! yieldRevNonEmpty groupSoFar
+                    yield! loop [] tail
+                | _ -> yield! loop (head :: groupSoFar) tail
+//            | head :: tail -> yield! loop (head :: groupSoFar) tail
+        }
+    
+    loop [] list |> List.ofSeq    
 /// Split a list into chunks using the specified separator
 /// This takes a list and returns a list of lists (chunks)
 /// that represent individual groups, separated by the given

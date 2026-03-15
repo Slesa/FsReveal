@@ -1,10 +1,9 @@
 ﻿module FsReveal.Formatting
 
+open FSharp.Formatting.Literate
 open FsReveal
-//open FSharp.Literate
 open FSharp.Formatting
 open System.Text
-open System.IO
 open System
 
 let (|SpeakerNote|OtherLine|) (line : string) =
@@ -42,3 +41,13 @@ let GenerateHTML (template:string) presentation =
 //    output.ToString()
     
     html
+
+    //let doc = Literate.FormatLiterateNodes presentation.Document
+    //let htmlSlides = Literate.WriteHtml doc
+//    let htmlSlides = Literate.ToHtml presentation.Document
+    //let toolTips = doc.FormattedTips
+//    let output = StringBuilder(template)
+    // replace properties
+//    presentation.Properties |> Map.iter (fun k v -> output.Replace(sprintf "{%s}" k, v) |> ignore)
+    //output.Replace("{slides}", htmlSlides).Replace("{tooltips}", toolTips) |> ignore
+//    output.ToString()

@@ -1,8 +1,7 @@
 ﻿module FsReveal.SpeakerNotesSpecs
 
 open FsReveal
-open NUnit.Framework
-open FsUnit
+open Xunit
 
 let testTemplate ="{slides}"
 
@@ -42,10 +41,17 @@ And some more<br/>
 
 """
 
-[<Test>]
+[<Fact>]
 let ``can generate sections from markdown``() = 
     let presentation = FsReveal.GetPresentationFromMarkdown md
-    Formatting.GenerateHTML testTemplate presentation.Document
-    
-    |> normalizeLineBreaks
-    |> shouldEqual (normalizeLineBreaks expectedOutput)
+
+//    Formatting.GenerateHTML testTemplate presentation.Document  
+//    |> normalizeLineBreaks
+//    |> shouldEqual (normalizeLineBreaks expectedOutput)
+
+    let result =
+        Formatting.GenerateHTML testTemplate presentation.Document
+        |> normalizeLineBreaks
+    let result = normalizeLineBreaks expectedOutput 
+    Assert.Equal (expectedOutput, result)
+

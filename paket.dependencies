@@ -1,18 +1,26 @@
 source https://nuget.org/api/v2
 redirects: on
 
-nuget FSharp.Formatting
-nuget FSharp.Core
-nuget FAKE
+nuget FSharp.Compiler.Service 43.8.100
+nuget FSharp.Formatting 20.0.1
+nuget FSharp.Core 8.0.100 content: none
+nuget FSharp.Formatting.Literate 20.0.1
+nuget FSharp.Formatting.Markdown 1.0.0
+nuget Microsoft.NET.Test.Sdk 18.0.0
+nuget xunit 2.9.3
+// nuget FSharp.Markdown
+// nuget FSharp.MetadataFormat
+// nuget FSharp.RazorEngine
+
+// nuget FAKE
 // github fsprojects/reveal.js:master
 
 group Build
   source https://nuget.org/api/v2    
-  nuget SourceLink.Fake
+//  nuget SourceLink.Fake
   github fsharp/FAKE modules/Octokit/Octokit.fsx
 
 group Test
   source https://nuget.org/api/v2
-  nuget NUnit ~> 2 
-  nuget NUnit.Runners ~> 2
-  github forki/FsUnit FsUnit.fs
+//  nuget NUnit 
+//  nuget NUnit.Runners

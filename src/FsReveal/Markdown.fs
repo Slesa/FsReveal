@@ -9,8 +9,6 @@ open FSharp.Formatting.Literate
 open FSharp.Formatting.Markdown
 open FSharp.Formatting.Templating
 
-//open FSharp.Markdown.Html
-
 let getPresentation (doc : LiterateDocument) =
     /// get properties, a list of (key,value) from
     /// [[Span[Literal "key : value"]]]
@@ -31,6 +29,8 @@ let getPresentation (doc : LiterateDocument) =
     // main section is separated by ***
     let sections = splitBy (HorizontalRule('*', None)) doc.Paragraphs
     
+    let head = sections.Head
+    let hhead = [head] 
     let properties,slideData =
         let map,slideData =
             match sections.Head with
